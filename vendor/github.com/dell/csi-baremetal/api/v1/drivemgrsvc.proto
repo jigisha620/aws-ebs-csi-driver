@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package v1api;
+option go_package="v1api";
+
+import "types.proto";
+
+message DrivesRequest {
+    string nodeId = 1;
+}
+
+message DrivesResponse {
+    repeated Drive disks = 1;
+}
+
+message DriveLocateRequest {
+    string driveSerialNumber = 1;
+    int32  action = 2;
+}
+
+message DriveLocateResponse {
+    int32 status = 1;
+}
+
+message NodeLocateRequest {
+    int32  action = 1;
+}
+
+message Empty {}
+
+service DriveService {
+    rpc GetDrivesList(DrivesRequest) returns (DrivesResponse){};
+    rpc Locate(DriveLocateRequest) returns (DriveLocateResponse){};
+    rpc LocateNode(NodeLocateRequest) returns (Empty){};
+}

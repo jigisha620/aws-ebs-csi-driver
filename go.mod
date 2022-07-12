@@ -14,7 +14,7 @@ require (
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b
 	google.golang.org/grpc v1.47.0
-	k8s.io/api v0.22.11
+	k8s.io/api v1.18.19
 	k8s.io/apimachinery v0.22.11
 	k8s.io/client-go v1.22.11
 	k8s.io/component-base v0.22.11
@@ -26,6 +26,12 @@ require (
 )
 
 require (
+	github.com/antonfisher/nested-logrus-formatter v1.0.3 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
+	sigs.k8s.io/controller-runtime v0.6.0 // indirect
+)
+
+require (
 	github.com/Microsoft/go-winio v0.4.16 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
@@ -33,6 +39,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/cyphar/filepath-securejoin v0.2.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dell/csi-baremetal v1.0.0
 	github.com/docker/distribution v2.7.1+incompatible // indirect
 	github.com/elazarl/goproxy v0.0.0-20181111060418-2ce16c963a8a // indirect
 	github.com/evanphx/json-patch v4.11.0+incompatible // indirect

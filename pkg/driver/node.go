@@ -697,6 +697,10 @@ func (d *nodeService) getVolumesLimit() int64 {
 		return d.driverOptions.volumeAttachLimit
 	}
 
+	if d.metadata.GetRegion() == "snow" {
+		return 10
+	}
+
 	instanceType := d.metadata.GetInstanceType()
 
 	isNitro := cloud.IsNitroInstanceType(instanceType)
