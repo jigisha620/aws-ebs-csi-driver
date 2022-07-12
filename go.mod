@@ -11,6 +11,7 @@ require (
 	github.com/kubernetes-csi/external-snapshotter/client/v4 v4.2.0
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.19.0
+	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b
 	google.golang.org/grpc v1.47.0
@@ -27,7 +28,6 @@ require (
 
 require (
 	github.com/antonfisher/nested-logrus-formatter v1.0.3 // indirect
-	github.com/sirupsen/logrus v1.8.1 // indirect
 	sigs.k8s.io/controller-runtime v0.6.0 // indirect
 )
 
