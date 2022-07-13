@@ -19,6 +19,8 @@ package driver
 import (
 	"context"
 	"fmt"
+	blk "github.com/dell/csi-baremetal/pkg/base/linuxutils/lsblk"
+	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 
@@ -167,6 +169,9 @@ func (d *nodeService) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 			klog.Warningf("NodeStageVolume: invalid partition config, will ignore. partition = %v", part)
 		}
 	}
+	block := blk.NewLSBLK(logrus.New())
+	bdevices, err := block.GetBlockDevices("")
+	klog.Infof("block devices list in node.go: %v", bdevices)
 	source, err := d.findDevicePath(devicePath, volumeID, partition)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to find device path %s. %v", devicePath, err)

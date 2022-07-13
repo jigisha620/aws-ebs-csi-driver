@@ -21,8 +21,6 @@ package driver
 
 import (
 	"fmt"
-	blk "github.com/dell/csi-baremetal/pkg/base/linuxutils/lsblk"
-	"github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -102,8 +100,7 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 
 	klog.V(5).Infof("[Debug] Falling back to snow volume lookup for: %q", devicePath)
 
-	//snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
-	snowDevicePath, err := findSnowVolume()
+	snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
 
 	if err == nil {
 		klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
@@ -118,22 +115,6 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 
 	canonicalDevicePath = d.appendPartition(canonicalDevicePath, partition)
 	return canonicalDevicePath, nil
-}
-
-func findSnowVolume() (deviceName string, err error) {
-	block := blk.NewLSBLK(logrus.New())
-	blockDevices, err := block.GetBlockDevices("")
-	if err != nil {
-		return "", fmt.Errorf("could not get block devices for snow: %v", err)
-	}
-	for _, device := range blockDevices {
-		if (strings.HasPrefix(device.Name, "/dev/v")) && (len(device.MountPoint) == 0) {
-			deviceName = device.Name
-		} else {
-			deviceName = ""
-		}
-	}
-	return deviceName, nil
 }
 
 func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath string, err error) error {
