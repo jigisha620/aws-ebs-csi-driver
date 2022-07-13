@@ -20,7 +20,6 @@ limitations under the License.
 package driver
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -126,10 +125,10 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 
 func findSnowVolume(d *nodeService, err error) ([]byte, error) {
 	//snowDevicePath := ""
-	cmd := d.mounter.(*NodeMounter).Exec.Command("lsblk", "--json", "--output", "NAME,MOUNTPOINT")
+	cmd := d.mounter.(*NodeMounter).Exec.Command("lsblk", "--json")
 	output, err := cmd.Output()
-	rawOut := make(map[string][]BlockDevice, 1)
-	err = json.Unmarshal(output, &rawOut)
+	//rawOut := make(map[string][]BlockDevice, 1)
+	//err = json.Unmarshal(output, &rawOut)
 	//if err != nil {
 	//	klog.V(5).Infof("unable to unmarshal output to BlockDevice instance, error: %v", err)
 	//}
