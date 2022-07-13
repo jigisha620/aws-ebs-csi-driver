@@ -64,7 +64,7 @@ func KubernetesAPIInstanceInfo(clientset kubernetes.Interface) (*Metadata, error
 
 	// re = regexp.MustCompile(awsInstanceIDRegex)
 	// instanceID := re.FindString(providerID)
-	instanceID := "s.i-8895861e64b0d7b36"
+	instanceID := "s.i-8cc460e6965e87520"
 	if instanceID == "" {
 		return nil, fmt.Errorf("did not find aws instance ID in node providerID string")
 	}
