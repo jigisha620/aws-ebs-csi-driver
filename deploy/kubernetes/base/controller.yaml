@@ -31,7 +31,7 @@ spec:
           tolerationSeconds: 300 
       containers:
         - name: ebs-plugin
-          image: public.ecr.aws/k5d0n8u0/patixjig-ebs-csi:a19ab68a75611e70c11a4f0e57c52410a72246ca-linux-amd64-amazon
+          image: public.ecr.aws/k5d0n8u0/patixjig-ebs-csi:293894ec19b92117ac6927dd5c03e62b67707663-linux-amd64-amazon
           imagePullPolicy: IfNotPresent
           args:
             # - {all,controller,node} # specify the driver mode
