@@ -110,16 +110,20 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 	}
 
 	if canonicalDevicePath == "" {
-		return "", errNoDevicePathFound(devicePath, volumeID)
+		return "", errNoDevicePathFound(devicePath, volumeID, snowDevicePath, err)
 	}
 
 	canonicalDevicePath = d.appendPartition(canonicalDevicePath, partition)
 	return canonicalDevicePath, nil
 }
 
-func errNoDevicePathFound(devicePath, volumeID string) error {
-	return fmt.Errorf("no device path for device %q volume %q found!", devicePath, volumeID)
+func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath string, err error) error {
+	return fmt.Errorf("no device path for device %q volume %q found snowdevicePath %v errorMount %v", devicePath, volumeID, snowDevicePath, err)
 }
+
+//func errNoDevicePathFound(devicePath, volumeID string) error {
+//	return fmt.Errorf("no device path for device %q volume %q found", devicePath, volumeID)
+//}
 
 // findNvmeVolume looks for the nvme volume with the specified name
 // It follows the symlink (if it exists) and returns the absolute path to the device
