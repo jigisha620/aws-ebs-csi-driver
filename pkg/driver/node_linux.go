@@ -105,15 +105,15 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 
 	klog.V(5).Infof("[Debug] Falling back to snow volume lookup for: %q", devicePath)
 
-	//snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
-	snowDevicePath, err := findSnowVolume(d, err)
+	snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
+	//snowDevicePath, err := findSnowVolume(d, err)
 
-	//if err == nil {
-	//	klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
-	//	canonicalDevicePath = snowDevicePath
-	//} else {
-	//	klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
-	//}
+	if err == nil {
+		klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
+		canonicalDevicePath = snowDevicePath
+	} else {
+		klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
+	}
 
 	if canonicalDevicePath == "" {
 		return "", errNoDevicePathFound(devicePath, volumeID, snowDevicePath, err)
@@ -148,7 +148,7 @@ func findSnowVolume(d *nodeService, err error) ([]byte, error) {
 	return output, err
 }
 
-func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath []byte, err error) error {
+func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath string, err error) error {
 	return fmt.Errorf("no device path for device %q volume %q found snowdevicePath %v errorMount %v", devicePath, volumeID, snowDevicePath, err)
 }
 
