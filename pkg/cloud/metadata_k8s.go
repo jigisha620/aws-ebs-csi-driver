@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"regexp"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -44,25 +43,28 @@ func KubernetesAPIInstanceInfo(clientset kubernetes.Interface) (*Metadata, error
 	if providerID == "" {
 		return nil, fmt.Errorf("node providerID empty, cannot parse")
 	}
+	//remove after testing with k8s
+	// awsRegionRegex := "([a-z]{2}(-gov)?)-(central|(north|south)?(east|west)?)-[0-9]"
+	// awsAvailabilityZoneRegex := "([a-z]{2}(-gov)?)-(central|(north|south)?(east|west)?)-[0-9][a-z]"
+	// awsInstanceIDRegex := "i-[a-z0-9]+$"
 
-	awsRegionRegex := "([a-z]{2}(-gov)?)-(central|(north|south)?(east|west)?)-[0-9]"
-	awsAvailabilityZoneRegex := "([a-z]{2}(-gov)?)-(central|(north|south)?(east|west)?)-[0-9][a-z]"
-	awsInstanceIDRegex := "i-[a-z0-9]+$"
-
-	re := regexp.MustCompile(awsRegionRegex)
-	region := re.FindString(providerID)
+	// re := regexp.MustCompile(awsRegionRegex)
+	// region := re.FindString(providerID)
+	region := "snow"
 	if region == "" {
 		return nil, fmt.Errorf("did not find aws region in node providerID string")
 	}
 
-	re = regexp.MustCompile(awsAvailabilityZoneRegex)
-	availabilityZone := re.FindString(providerID)
+	// re = regexp.MustCompile(awsAvailabilityZoneRegex)
+	// availabilityZone := re.FindString(providerID)
+	availabilityZone := "snow"
 	if availabilityZone == "" {
 		return nil, fmt.Errorf("did not find aws availability zone in node providerID string")
 	}
 
-	re = regexp.MustCompile(awsInstanceIDRegex)
-	instanceID := re.FindString(providerID)
+	// re = regexp.MustCompile(awsInstanceIDRegex)
+	// instanceID := re.FindString(providerID)
+	instanceID := "s.i-8895861e64b0d7b36"
 	if instanceID == "" {
 		return nil, fmt.Errorf("did not find aws instance ID in node providerID string")
 	}
