@@ -109,16 +109,22 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 		klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
 	}
 
+	cmd := d.mounter.(*NodeMounter).Exec.Command("lsblk", "--json", "--output", "NAME")
+	output, err := cmd.Output()
+	if err != nil {
+		klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
+	}
+
 	if canonicalDevicePath == "" {
-		return "", errNoDevicePathFound(devicePath, volumeID, snowDevicePath, err)
+		return "", errNoDevicePathFound(devicePath, volumeID, output, err)
 	}
 
 	canonicalDevicePath = d.appendPartition(canonicalDevicePath, partition)
 	return canonicalDevicePath, nil
 }
 
-func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath string, err error) error {
-	return fmt.Errorf("no device path for device %q volume %q found snowdevicePath %v errorMount %v", devicePath, volumeID, snowDevicePath, err)
+func errNoDevicePathFound(devicePath string, volumeID string, output []byte, err error) error {
+	return fmt.Errorf("no device path for device %q volume %q found snowdevicePath %v errorMount %v", devicePath, volumeID, output, err)
 }
 
 //func errNoDevicePathFound(devicePath, volumeID string) error {
