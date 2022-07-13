@@ -22,6 +22,7 @@ package driver
 import (
 	"fmt"
 	"os"
+	osexec "os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -106,8 +107,8 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 	klog.V(5).Infof("[Debug] Falling back to snow volume lookup for: %q", devicePath)
 
 	//snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
-	snowDevicePath, err := d.deviceIdentifier.Lstat("/dev/vda")
-	//snowDevicePath, err := findSnowVolume(d, err)
+	//snowDevicePath, err := d.deviceIdentifier.Lstat("/dev/vda")
+	snowDevicePath, err := findSnowVolume(d, err)
 
 	//if err == nil {
 	//	klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
@@ -126,7 +127,9 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 
 func findSnowVolume(d *nodeService, err error) ([]byte, error) {
 	//snowDevicePath := ""
-	cmd := d.mounter.(*NodeMounter).Exec.Command("/usr/bin/lsblk", "--json")
+	//cmd := d.mounter.(*NodeMounter).Exec.Command("/usr/bin/lsblk", "--json")
+	//output, err := cmd.Output()
+	cmd := osexec.Command("lsblk", "--json")
 	output, err := cmd.Output()
 	//rawOut := make(map[string][]BlockDevice, 1)
 	//err = json.Unmarshal(output, &rawOut)
@@ -149,7 +152,7 @@ func findSnowVolume(d *nodeService, err error) ([]byte, error) {
 	return output, err
 }
 
-func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath os.FileInfo, err error) error {
+func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath []byte, err error) error {
 	return fmt.Errorf("no device path for device %q volume %q found snowdevicePath %v errorMount %v", devicePath, volumeID, snowDevicePath, err)
 }
 
