@@ -106,7 +106,7 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 	klog.V(5).Infof("[Debug] Falling back to snow volume lookup for: %q", devicePath)
 
 	//snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
-	snowDevicePath, err := d.deviceIdentifier.Lstat(devicePath)
+	snowDevicePath, err := d.deviceIdentifier.Lstat("/dev/vda")
 	//snowDevicePath, err := findSnowVolume(d, err)
 
 	//if err == nil {
