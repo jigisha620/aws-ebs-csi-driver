@@ -20,6 +20,7 @@ limitations under the License.
 package driver
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -122,12 +123,12 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 	return canonicalDevicePath, nil
 }
 
-func findSnowVolume(d *nodeService, err error) ([]byte, error) {
+func findSnowVolume(d *nodeService, err error) (map[string][]BlockDevice, error) {
 	//snowDevicePath := ""
 	cmd := d.mounter.(*NodeMounter).Exec.Command("lsblk", "--json", "--output", "NAME,MOUNTPOINT")
 	output, err := cmd.Output()
-	//rawOut := make(map[string][]BlockDevice, 1)
-	//err = json.Unmarshal(output, &rawOut)
+	rawOut := make(map[string][]BlockDevice, 1)
+	err = json.Unmarshal(output, &rawOut)
 	//if err != nil {
 	//	klog.V(5).Infof("unable to unmarshal output to BlockDevice instance, error: %v", err)
 	//}
@@ -144,10 +145,10 @@ func findSnowVolume(d *nodeService, err error) ([]byte, error) {
 	//	}
 	//}
 	//return snowDevicePath, err
-	return output, err
+	return rawOut, err
 }
 
-func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath []byte, err error) error {
+func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath map[string][]BlockDevice, err error) error {
 	return fmt.Errorf("no device path for device %q volume %q found snowdevicePath %v errorMount %v", devicePath, volumeID, snowDevicePath, err)
 }
 
