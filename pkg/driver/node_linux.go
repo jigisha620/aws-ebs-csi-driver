@@ -20,7 +20,6 @@ limitations under the License.
 package driver
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -108,12 +107,12 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 
 	snowDevicePath, err := findSnowVolume(d, err)
 	//snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
-	if err == nil {
-		klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
-		canonicalDevicePath = snowDevicePath
-	} else {
-		klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
-	}
+	//if err == nil {
+	//	klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
+	//	canonicalDevicePath = snowDevicePath
+	//} else {
+	//	klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
+	//}
 
 	if canonicalDevicePath == "" {
 		return "", errNoDevicePathFound(devicePath, volumeID, snowDevicePath, err)
@@ -123,31 +122,32 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 	return canonicalDevicePath, nil
 }
 
-func findSnowVolume(d *nodeService, err error) (string, error) {
-	snowDevicePath := ""
+func findSnowVolume(d *nodeService, err error) ([]byte, error) {
+	//snowDevicePath := ""
 	cmd := d.mounter.(*NodeMounter).Exec.Command("lsblk", "--json", "--output", "NAME,MOUNTPOINT")
 	output, err := cmd.Output()
-	rawOut := make(map[string][]BlockDevice, 1)
-	err = json.Unmarshal(output, &rawOut)
-	if err != nil {
-		klog.V(5).Infof("unable to unmarshal output to BlockDevice instance, error: %v", err)
-	}
-	var (
-		devs []BlockDevice
-		ok   bool
-	)
-	if devs, ok = rawOut["blockdevices"]; !ok {
-		klog.V(5).Infof("unexpected lsblk output format, missing block devices")
-	}
-	for _, d := range devs {
-		if (strings.HasPrefix(d.Name, "/dev/v")) && (len(d.MountPoint) == 0) {
-			snowDevicePath = d.Name
-		}
-	}
-	return snowDevicePath, err
+	//rawOut := make(map[string][]BlockDevice, 1)
+	//err = json.Unmarshal(output, &rawOut)
+	//if err != nil {
+	//	klog.V(5).Infof("unable to unmarshal output to BlockDevice instance, error: %v", err)
+	//}
+	//var (
+	//	devs []BlockDevice
+	//	ok   bool
+	//)
+	//if devs, ok = rawOut["blockdevices"]; !ok {
+	//	klog.V(5).Infof("unexpected lsblk output format, missing block devices")
+	//}
+	//for _, d := range devs {
+	//	if (strings.HasPrefix(d.Name, "/dev/v")) && (len(d.MountPoint) == 0) {
+	//		snowDevicePath = d.Name
+	//	}
+	//}
+	//return snowDevicePath, err
+	return output, err
 }
 
-func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath string, err error) error {
+func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath []byte, err error) error {
 	return fmt.Errorf("no device path for device %q volume %q found snowdevicePath %v errorMount %v", devicePath, volumeID, snowDevicePath, err)
 }
 
