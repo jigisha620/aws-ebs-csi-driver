@@ -124,7 +124,7 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 
 func findSnowVolume(d *nodeService, err error) (string, error) {
 	//snowDevicePath := ""
-	cmd := d.mounter.(*NodeMounter).Exec.Command("lsblk", "--json", "--output", "NAME,MOUNTPOINT")
+	cmd := d.mounter.(*NodeMounter).Exec.Command("lsblk", "--paths", "--json", "--bytes", "--fs", "--output", "NAME,MOUNTPOINT")
 	output, err := cmd.Output()
 	snowDevicePath := string(output)
 	//rawOut := make(map[string][]BlockDevice, 1)
