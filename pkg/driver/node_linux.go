@@ -30,11 +30,6 @@ import (
 	"k8s.io/klog"
 )
 
-type BlockDevice struct {
-	Name       string `json:"name,omitempty"`
-	MountPoint string `json:"mountpoint,omitempty"`
-}
-
 func (d *nodeService) appendPartition(devicePath, partition string) string {
 	if partition == "" {
 		return devicePath
