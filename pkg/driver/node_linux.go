@@ -105,56 +105,25 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 
 	klog.V(5).Infof("[Debug] Falling back to snow volume lookup for: %q", devicePath)
 
-	snowDevicePath, err := findSnowVolume(d, err)
-	//snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
-	//if err == nil {
-	//	klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
-	//	canonicalDevicePath = snowDevicePath
-	//} else {
-	//	klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
-	//}
+	snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
+	if err == nil {
+		klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
+		canonicalDevicePath = snowDevicePath
+	} else {
+		klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
+	}
 
 	if canonicalDevicePath == "" {
-		return "", errNoDevicePathFound(devicePath, volumeID, snowDevicePath, err)
+		return "", errNoDevicePathFound(devicePath, volumeID)
 	}
 
 	canonicalDevicePath = d.appendPartition(canonicalDevicePath, partition)
 	return canonicalDevicePath, nil
 }
 
-func findSnowVolume(d *nodeService, err error) (string, error) {
-	//snowDevicePath := ""
-	cmd := d.mounter.(*NodeMounter).Exec.Command("lsblk", "--paths", "--json", "--bytes", "--fs", "--output", "NAME,MOUNTPOINT")
-	output, err := cmd.Output()
-	snowDevicePath := string(output)
-	//rawOut := make(map[string][]BlockDevice, 1)
-	//err = json.Unmarshal(output, &rawOut)
-	//if err != nil {
-	//	klog.V(5).Infof("unable to unmarshal output to BlockDevice instance, error: %v", err)
-	//}
-	//var (
-	//	devs []BlockDevice
-	//	ok   bool
-	//)
-	//if devs, ok = rawOut["blockdevices"]; !ok {
-	//	klog.V(5).Infof("unexpected lsblk output format, missing block devices")
-	//}
-	//for _, d := range devs {
-	//	if (strings.HasPrefix(d.Name, "/dev/v")) && (len(d.MountPoint) == 0) {
-	//		snowDevicePath = d.Name
-	//	}
-	//}
-	//return snowDevicePath, err
-	return snowDevicePath, err
+func errNoDevicePathFound(devicePath, volumeID string) error {
+	return fmt.Errorf("no device path for device %q volume %q found", devicePath, volumeID)
 }
-
-func errNoDevicePathFound(devicePath string, volumeID string, snowDevicePath string, err error) error {
-	return fmt.Errorf("no device path for device %q volume %q found snowdevicePath %v errorMount %v", devicePath, volumeID, snowDevicePath, err)
-}
-
-//func errNoDevicePathFound(devicePath, volumeID string) error {
-//	return fmt.Errorf("no device path for device %q volume %q found", devicePath, volumeID)
-//}
 
 // findNvmeVolume looks for the nvme volume with the specified name
 // It follows the symlink (if it exists) and returns the absolute path to the device
