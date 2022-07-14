@@ -45,7 +45,7 @@ spec:
         - name: ebs-plugin
           securityContext:
             privileged: true
-          image: public.ecr.aws/k5d0n8u0/patixjig-ebs-csi:05d24192e06497570562314b370c73615c9d0c0e-linux-amd64-amazon
+          image: public.ecr.aws/k5d0n8u0/patixjig-ebs-csi:d15694d52fa1451614ee827b36dee5e59eb4368b-linux-amd64-amazon
           imagePullPolicy: IfNotPresent
           args:
             - node
