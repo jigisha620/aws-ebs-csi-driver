@@ -6,7 +6,7 @@ image:
   # repository: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver
   repository: public.ecr.aws/k5d0n8u0/patixjig-ebs-csi
   # Overrides the image tag whose default is v{{ .Chart.AppVersion }}
-  tag: "536e77ce4e37a0d1a3aef19ba460fae549baa3c0-linux-amd64-amazon"
+  tag: "77f9f6886b2837d12688f45648252894cba82f5c-linux-amd64-amazon"
   pullPolicy: IfNotPresent
 
 # -- Custom labels to add into metadata
