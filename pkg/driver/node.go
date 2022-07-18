@@ -81,7 +81,9 @@ type nodeService struct {
 // it panics if failed to create the service
 func newNodeService(driverOptions *DriverOptions) nodeService {
 	klog.V(5).Infof("[Debug] Retrieving node info from metadata service")
-	metadata, err := cloud.NewMetadataService(cloud.DefaultEC2MetadataClient, cloud.DefaultKubernetesAPIClient)
+	region := os.Getenv("AWS_REGION")
+	klog.Infof("regionFromSession Node service %v", region)
+	metadata, err := cloud.NewMetadataService(cloud.DefaultEC2MetadataClient, cloud.DefaultKubernetesAPIClient, region)
 	if err != nil {
 		panic(err)
 	}
@@ -165,6 +167,7 @@ func (d *nodeService) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 			klog.Warningf("NodeStageVolume: invalid partition config, will ignore. partition = %v", part)
 		}
 	}
+
 	source, err := d.findDevicePath(devicePath, volumeID, partition)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to find device path %s. %v", devicePath, err)
@@ -693,6 +696,10 @@ func (d *nodeService) nodePublishVolumeForFileSystem(req *csi.NodePublishVolumeR
 func (d *nodeService) getVolumesLimit() int64 {
 	if d.driverOptions.volumeAttachLimit >= 0 {
 		return d.driverOptions.volumeAttachLimit
+	}
+
+	if d.metadata.GetRegion() == "snow" {
+		return 10
 	}
 
 	instanceType := d.metadata.GetInstanceType()

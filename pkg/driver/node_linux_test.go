@@ -34,6 +34,7 @@ import (
 func TestFindDevicePath(t *testing.T) {
 	devicePath := "/dev/xvbda"
 	nvmeDevicePath := "/dev/nvme1n1"
+	snowDevicePath := "/dev/vda"
 	volumeID := "vol-test"
 	nvmeName := "/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_voltest"
 	deviceFileInfo := fs.FileInfo(&fakeFileInfo{devicePath, os.ModeDevice})
@@ -101,9 +102,27 @@ func TestFindDevicePath(t *testing.T) {
 					mockMounter.EXPECT().PathExists(gomock.Eq(devicePath)).Return(false, nil),
 
 					mockDeviceIdentifier.EXPECT().Lstat(gomock.Eq(nvmeName)).Return(nil, os.ErrNotExist),
+
+					mockDeviceIdentifier.EXPECT().FindSnowVolume().Return("", os.ErrNotExist),
 				)
 			},
 			expectError: errNoDevicePathFound(devicePath, volumeID).Error(),
+		},
+		{
+			name:       "success: device path doesn't exist and snow path exists",
+			devicePath: devicePath,
+			volumeID:   volumeID,
+			partition:  "",
+			expectMock: func(mockMounter MockMounter, mockDeviceIdentifier MockDeviceIdentifier) {
+				gomock.InOrder(
+					mockMounter.EXPECT().PathExists(gomock.Eq(devicePath)).Return(false, nil),
+
+					mockDeviceIdentifier.EXPECT().Lstat(gomock.Eq(nvmeName)).Return(nil, os.ErrNotExist),
+
+					mockDeviceIdentifier.EXPECT().FindSnowVolume().Return(snowDevicePath, nil),
+				)
+			},
+			expectDevicePath: snowDevicePath,
 		},
 	}
 	// The partition variant of each case should be the same except the partition
@@ -112,7 +131,7 @@ func TestFindDevicePath(t *testing.T) {
 	for _, tc := range testCases {
 		tc.name += " (with partition)"
 		tc.partition = "1"
-		if tc.expectDevicePath == devicePath {
+		if tc.expectDevicePath == devicePath || tc.expectDevicePath == snowDevicePath {
 			tc.expectDevicePath += tc.partition
 		} else if tc.expectDevicePath == nvmeDevicePath {
 			tc.expectDevicePath += "p" + tc.partition
