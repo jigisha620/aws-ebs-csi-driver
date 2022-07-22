@@ -21,6 +21,7 @@ package driver
 
 import (
 	"fmt"
+	blk "github.com/dell/csi-baremetal/pkg/base/linuxutils/lsblk"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -100,27 +101,35 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 
 	klog.V(5).Infof("[Debug] Falling back to snow volume lookup for: %q", devicePath)
 
-	snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
+	// snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
+	// if err == nil {
+	// 	klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
+	// 	canonicalDevicePath = snowDevicePath
+	// } else {
+	// 	klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
+	// }
+
+	snowDevicePath, bdev, err := d.deviceIdentifier.FindSnowVolume()
 	if err == nil {
 		klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
 		canonicalDevicePath = snowDevicePath
 	} else {
 		klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
 	}
-
+	klog.Infof("Snow device Path %v", snowDevicePath)
 	if canonicalDevicePath == "" {
-		return "", errNoDevicePathFound(devicePath, volumeID, err)
+		return "", errNoDevicePathFound(devicePath, volumeID, bdev)
 	}
 
 	canonicalDevicePath = d.appendPartition(canonicalDevicePath, partition)
 	return canonicalDevicePath, nil
 }
 
-// func errNoDevicePathFound(devicePath, volumeID string) error {
+// func errNoDevicePathFound(devicePath, volumeID string) error {x
 // 	return fmt.Errorf("no device path for device %q volume %q found", devicePath, volumeID)
 // }
-func errNoDevicePathFound(devicePath string, volumeID string, err error) error {
-	return fmt.Errorf("no device path for device %q volume %q found error %v", devicePath, volumeID, err)
+func errNoDevicePathFound(devicePath string, volumeID string, bdev []blk.BlockDevice) error {
+	return fmt.Errorf("no device path for device %q volume %q found error %v", devicePath, volumeID, bdev)
 }
 
 // findNvmeVolume looks for the nvme volume with the specified name

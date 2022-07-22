@@ -17,7 +17,6 @@ limitations under the License.
 package driver
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -77,7 +76,7 @@ func newNodeMounter() (Mounter, error) {
 type DeviceIdentifier interface {
 	Lstat(name string) (os.FileInfo, error)
 	EvalSymlinks(path string) (string, error)
-	FindSnowVolume() (string, error)
+	FindSnowVolume() (string, []blk.BlockDevice, error)
 }
 
 type nodeDeviceIdentifier struct{}
@@ -94,11 +93,13 @@ func (i *nodeDeviceIdentifier) EvalSymlinks(path string) (string, error) {
 	return filepath.EvalSymlinks(path)
 }
 
-func (i *nodeDeviceIdentifier) FindSnowVolume() (deviceName string, err error) {
+// func (i *nodeDeviceIdentifier) FindSnowVolume() (deviceName string, err error) {
+func (i *nodeDeviceIdentifier) FindSnowVolume() (deviceName string, blockDevices []blk.BlockDevice, err error) {
 	block := blk.NewLSBLK(logrus.New())
-	blockDevices, err := block.GetBlockDevices("")
+	blockDevices, err = block.GetBlockDevices("")
 	if err != nil {
-		return "", fmt.Errorf("could not get block devices for snow: %v", err)
+		// return "", fmt.Errorf("could not get block devices for snow: %v", err)
+		return "", blockDevices, err
 	}
 	for _, device := range blockDevices {
 		if (strings.HasPrefix(device.Name, "/dev/v")) && (len(device.MountPoint) == 0) {
@@ -107,5 +108,5 @@ func (i *nodeDeviceIdentifier) FindSnowVolume() (deviceName string, err error) {
 			deviceName = ""
 		}
 	}
-	return deviceName, nil
+	return deviceName, blockDevices, err
 }
