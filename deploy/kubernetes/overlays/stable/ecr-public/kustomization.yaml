@@ -5,7 +5,7 @@ bases:
 images:
   - name: 602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/aws-ebs-csi-driver
     # newName: public.ecr.aws/ebs-csi-driver/aws-ebs-csi-driver
-    newName: public.ecr.aws/k5d0n8u0/patixjig-ebs-csi:8ee5e5ee4a45df149347445df89986a31ca5a80c-linux-amd64-amazon
+    newName: public.ecr.aws/k5d0n8u0/patixjig-ebs-csi:497460acb1da9d9e8a993ab1181cdf40f0376d96-linux-amd64-amazon
   - name: 602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/csi-provisioner
     newName: public.ecr.aws/eks-distro/kubernetes-csi/external-provisioner
     newTag: v3.1.0-eks-1-20-15
