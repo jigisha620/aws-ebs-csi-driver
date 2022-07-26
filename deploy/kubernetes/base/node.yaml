@@ -46,7 +46,7 @@ spec:
           securityContext:
             privileged: true
           # image: k8s.gcr.io/provider-aws/aws-ebs-csi-driver
-          image: public.ecr.aws/k5d0n8u0/patixjig-ebs-csi:497460acb1da9d9e8a993ab1181cdf40f0376d96-linux-amd64-amazon
+          image: public.ecr.aws/k5d0n8u0/patixjig-ebs-csi:c41f00a037a4bb2aff526d0bea88411d84b8183d-linux-amd64-amazon
           imagePullPolicy: IfNotPresent
           args:
             - node

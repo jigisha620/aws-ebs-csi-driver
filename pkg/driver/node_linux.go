@@ -21,7 +21,6 @@ package driver
 
 import (
 	"fmt"
-	blk "github.com/dell/csi-baremetal/pkg/base/linuxutils/lsblk"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -108,29 +107,25 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 	// } else {
 	// 	klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
 	// }
-
-	snowDevicePath, bdev, err := d.deviceIdentifier.FindSnowVolume()
-	if err == nil {
-		klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
-		canonicalDevicePath = snowDevicePath
-	} else {
-		klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
+	if d.metadata.GetRegion() == "snow" {
+		canonicalDevicePath = "/dev/vd" + strings.TrimPrefix(devicePath, "/dev/xvdb")
 	}
-	klog.Infof("Snow device Path %v", snowDevicePath)
+
 	if canonicalDevicePath == "" {
-		return "", errNoDevicePathFound(devicePath, volumeID, bdev)
+		return "", errNoDevicePathFound(devicePath, volumeID)
 	}
 
 	canonicalDevicePath = d.appendPartition(canonicalDevicePath, partition)
 	return canonicalDevicePath, nil
 }
 
-// func errNoDevicePathFound(devicePath, volumeID string) error {x
-// 	return fmt.Errorf("no device path for device %q volume %q found", devicePath, volumeID)
-// }
-func errNoDevicePathFound(devicePath string, volumeID string, bdev []blk.BlockDevice) error {
-	return fmt.Errorf("no device path for device %q volume %q found error %v", devicePath, volumeID, bdev)
+func errNoDevicePathFound(devicePath, volumeID string) error {
+	return fmt.Errorf("no device path for device %q volume %q found", devicePath, volumeID)
 }
+
+//func errNoDevicePathFound(devicePath string, volumeID string, bdev []blk.BlockDevice) error {
+//	return fmt.Errorf("no device path for device %q volume %q found error %v", devicePath, volumeID, bdev)
+//}
 
 // findNvmeVolume looks for the nvme volume with the specified name
 // It follows the symlink (if it exists) and returns the absolute path to the device
