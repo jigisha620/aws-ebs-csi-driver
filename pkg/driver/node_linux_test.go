@@ -108,7 +108,7 @@ func TestFindDevicePath(t *testing.T) {
 		},
 		{
 			name:       "success: device path doesn't exist and snow path exists",
-			devicePath: devicePath,
+			devicePath: "/dev/xvdba",
 			volumeID:   volumeID,
 			partition:  "",
 			expectMock: func(mockMounter MockMounter, mockDeviceIdentifier MockDeviceIdentifier) {
