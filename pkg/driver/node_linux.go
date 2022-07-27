@@ -98,16 +98,8 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 		klog.V(5).Infof("[Debug] error searching for nvme path %q: %v", nvmeName, err)
 	}
 
-	klog.V(5).Infof("[Debug] Falling back to snow volume lookup for: %q", devicePath)
-
-	// snowDevicePath, err := d.deviceIdentifier.FindSnowVolume()
-	// if err == nil {
-	// 	klog.V(5).Infof("[Debug] successfully resolved devicePath=%q to %q", devicePath, snowDevicePath)
-	// 	canonicalDevicePath = snowDevicePath
-	// } else {
-	// 	klog.V(5).Infof("[Debug] error searching for snow path: %v", err)
-	// }
 	if d.metadata.GetRegion() == "snow" {
+		klog.V(5).Infof("[Debug] Falling back to snow volume lookup for: %q", devicePath)
 		canonicalDevicePath = "/dev/vd" + strings.TrimPrefix(devicePath, "/dev/xvdb")
 	}
 
@@ -122,10 +114,6 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 func errNoDevicePathFound(devicePath, volumeID string) error {
 	return fmt.Errorf("no device path for device %q volume %q found", devicePath, volumeID)
 }
-
-//func errNoDevicePathFound(devicePath string, volumeID string, bdev []blk.BlockDevice) error {
-//	return fmt.Errorf("no device path for device %q volume %q found error %v", devicePath, volumeID, bdev)
-//}
 
 // findNvmeVolume looks for the nvme volume with the specified name
 // It follows the symlink (if it exists) and returns the absolute path to the device

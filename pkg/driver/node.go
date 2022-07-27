@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	csi "github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/kubernetes-sigs/aws-ebs-csi-driver/pkg/cloud"
@@ -169,13 +168,7 @@ func (d *nodeService) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 		}
 	}
 
-	var source string
-	var err error
-	if d.metadata.GetRegion() == "snow" {
-		source = "/dev/vd" + strings.TrimPrefix(devicePath, "/dev/xvdb") + partition
-	} else {
-		source, err = d.findDevicePath(devicePath, volumeID, partition)
-	}
+	source, err := d.findDevicePath(devicePath, volumeID, partition)
 
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to find device path %s. %v", devicePath, err)
