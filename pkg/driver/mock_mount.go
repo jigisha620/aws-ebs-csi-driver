@@ -371,21 +371,6 @@ func (mr *MockDeviceIdentifierMockRecorder) EvalSymlinks(path interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EvalSymlinks", reflect.TypeOf((*MockDeviceIdentifier)(nil).EvalSymlinks), path)
 }
 
-// FindSnowVolume mocks base method.
-func (m *MockDeviceIdentifier) FindSnowVolume() (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindSnowVolume")
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindSnowVolume indicates an expected call of FindSnowVolume.
-func (mr *MockDeviceIdentifierMockRecorder) FindSnowVolume() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindSnowVolume", reflect.TypeOf((*MockDeviceIdentifier)(nil).FindSnowVolume))
-}
-
 // Lstat mocks base method.
 func (m *MockDeviceIdentifier) Lstat(name string) (os.FileInfo, error) {
 	m.ctrl.T.Helper()
