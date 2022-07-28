@@ -169,7 +169,6 @@ func (d *nodeService) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 	}
 
 	source, err := d.findDevicePath(devicePath, volumeID, partition)
-
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to find device path %s. %v", devicePath, err)
 	}
