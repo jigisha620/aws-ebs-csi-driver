@@ -540,7 +540,7 @@ gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
-# k8s.io/api v1.18.19 => k8s.io/api v0.22.11
+# k8s.io/api v0.22.11 => k8s.io/api v0.22.11
 ## explicit; go 1.16
 k8s.io/api/admission/v1
 k8s.io/api/admission/v1beta1
