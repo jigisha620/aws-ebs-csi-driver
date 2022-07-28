@@ -32,7 +32,7 @@ import (
 )
 
 func TestFindDevicePath(t *testing.T) {
-	devicePath := "/dev/xvbda"
+	devicePath := "/dev/xvdba"
 	nvmeDevicePath := "/dev/nvme1n1"
 	snowDevicePath := "/dev/vda"
 	volumeID := "vol-test"
@@ -102,8 +102,6 @@ func TestFindDevicePath(t *testing.T) {
 					mockMounter.EXPECT().PathExists(gomock.Eq(devicePath)).Return(false, nil),
 
 					mockDeviceIdentifier.EXPECT().Lstat(gomock.Eq(nvmeName)).Return(nil, os.ErrNotExist),
-
-					mockDeviceIdentifier.EXPECT().FindSnowVolume().Return("", os.ErrNotExist),
 				)
 			},
 			expectError: errNoDevicePathFound(devicePath, volumeID).Error(),
@@ -118,8 +116,6 @@ func TestFindDevicePath(t *testing.T) {
 					mockMounter.EXPECT().PathExists(gomock.Eq(devicePath)).Return(false, nil),
 
 					mockDeviceIdentifier.EXPECT().Lstat(gomock.Eq(nvmeName)).Return(nil, os.ErrNotExist),
-
-					mockDeviceIdentifier.EXPECT().FindSnowVolume().Return(snowDevicePath, nil),
 				)
 			},
 			expectDevicePath: snowDevicePath,
@@ -153,6 +149,16 @@ func TestFindDevicePath(t *testing.T) {
 				deviceIdentifier: mockDeviceIdentifier,
 				inFlight:         internal.NewInFlight(),
 				driverOptions:    &DriverOptions{},
+			}
+
+			if tc.expectDevicePath == snowDevicePath+tc.partition {
+				nodeDriver = nodeService{
+					metadata:         &cloud.Metadata{Region: "snow"},
+					mounter:          mockMounter,
+					deviceIdentifier: mockDeviceIdentifier,
+					inFlight:         internal.NewInFlight(),
+					driverOptions:    &DriverOptions{},
+				}
 			}
 
 			if tc.expectMock != nil {

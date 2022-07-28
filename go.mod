@@ -11,7 +11,6 @@ require (
 	github.com/kubernetes-csi/external-snapshotter/client/v4 v4.2.0
 	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.19.0
-	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.8.0
 	golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b
 	google.golang.org/grpc v1.47.0
@@ -27,11 +26,6 @@ require (
 )
 
 require (
-	github.com/antonfisher/nested-logrus-formatter v1.0.3 // indirect
-	sigs.k8s.io/controller-runtime v0.6.0 // indirect
-)
-
-require (
 	github.com/Microsoft/go-winio v0.4.16 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
@@ -39,7 +33,6 @@ require (
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/cyphar/filepath-securejoin v0.2.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/dell/csi-baremetal v1.0.0
 	github.com/docker/distribution v2.7.1+incompatible // indirect
 	github.com/elazarl/goproxy v0.0.0-20181111060418-2ce16c963a8a // indirect
 	github.com/evanphx/json-patch v4.11.0+incompatible // indirect

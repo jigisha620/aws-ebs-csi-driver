@@ -17,14 +17,10 @@ limitations under the License.
 package driver
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
-	blk "github.com/dell/csi-baremetal/pkg/base/linuxutils/lsblk"
 	"github.com/kubernetes-sigs/aws-ebs-csi-driver/pkg/mounter"
-	"github.com/sirupsen/logrus"
 	mountutils "k8s.io/mount-utils"
 )
 
@@ -77,7 +73,6 @@ func newNodeMounter() (Mounter, error) {
 type DeviceIdentifier interface {
 	Lstat(name string) (os.FileInfo, error)
 	EvalSymlinks(path string) (string, error)
-	FindSnowVolume() (string, error)
 }
 
 type nodeDeviceIdentifier struct{}
@@ -92,20 +87,4 @@ func (i *nodeDeviceIdentifier) Lstat(name string) (os.FileInfo, error) {
 
 func (i *nodeDeviceIdentifier) EvalSymlinks(path string) (string, error) {
 	return filepath.EvalSymlinks(path)
-}
-
-func (i *nodeDeviceIdentifier) FindSnowVolume() (deviceName string, err error) {
-	block := blk.NewLSBLK(logrus.New())
-	blockDevices, err := block.GetBlockDevices("")
-	if err != nil {
-		return "", fmt.Errorf("could not get block devices for snow: %v", err)
-	}
-	for _, device := range blockDevices {
-		if (strings.HasPrefix(device.Name, "/dev/v")) && (len(device.MountPoint) == 0) {
-			deviceName = device.Name
-		} else {
-			deviceName = ""
-		}
-	}
-	return deviceName, nil
 }
