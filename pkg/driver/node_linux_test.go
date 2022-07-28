@@ -151,7 +151,7 @@ func TestFindDevicePath(t *testing.T) {
 				driverOptions:    &DriverOptions{},
 			}
 
-			if tc.expectDevicePath == tc.expectDevicePath+snowDevicePath {
+			if tc.expectDevicePath == snowDevicePath+tc.partition {
 				nodeDriver = nodeService{
 					metadata:         &cloud.Metadata{Region: "snow"},
 					mounter:          mockMounter,
