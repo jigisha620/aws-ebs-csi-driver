@@ -92,8 +92,8 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 
 	if err == nil {
 		klog.V(5).Infof("[Debug] successfully resolved nvmeName=%q to %q", nvmeName, nvmeDevicePath)
-		canonicalDevicePath = d.appendPartition(nvmeDevicePath, partition)
-		return canonicalDevicePath, nil
+		canonicalDevicePath = nvmeDevicePath
+		return d.appendPartition(canonicalDevicePath, partition), nil
 	} else {
 		klog.V(5).Infof("[Debug] error searching for nvme path %q: %v", nvmeName, err)
 	}
