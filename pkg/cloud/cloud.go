@@ -341,7 +341,7 @@ func (c *cloud) CreateDisk(ctx context.Context, volumeName string, diskOptions *
 		Encrypted:        aws.Bool(diskOptions.Encrypted),
 	}
 
-	if zone != "snow" {
+	if util.IsSBE(zone) {
 		requestInput.TagSpecifications = []*ec2.TagSpecification{&tagSpec}
 	}
 
@@ -399,7 +399,7 @@ func (c *cloud) CreateDisk(ctx context.Context, volumeName string, diskOptions *
 
 	outpostArn := aws.StringValue(response.OutpostArn)
 	var resources []*string
-	if zone == "snow" {
+	if !util.IsSBE(zone) {
 		requestTagsInput := &ec2.CreateTagsInput{
 			Resources: append(resources, &volumeID),
 			Tags:      tags,

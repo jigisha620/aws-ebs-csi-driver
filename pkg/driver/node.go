@@ -25,6 +25,7 @@ import (
 	csi "github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/kubernetes-sigs/aws-ebs-csi-driver/pkg/cloud"
 	"github.com/kubernetes-sigs/aws-ebs-csi-driver/pkg/driver/internal"
+	"github.com/kubernetes-sigs/aws-ebs-csi-driver/pkg/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/klog"
@@ -698,7 +699,7 @@ func (d *nodeService) getVolumesLimit() int64 {
 		return d.driverOptions.volumeAttachLimit
 	}
 
-	if d.metadata.GetRegion() == "snow" {
+	if util.IsSBE(d.metadata.GetRegion()) {
 		return 10
 	}
 

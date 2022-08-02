@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/arn"
 	"github.com/aws/aws-sdk-go/aws/ec2metadata"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/kubernetes-sigs/aws-ebs-csi-driver/pkg/util"
 	"k8s.io/klog"
 )
 
@@ -35,7 +36,7 @@ func EC2MetadataInstanceInfo(svc EC2Metadata, regionFromSession string) (*Metada
 	}
 
 	if len(doc.Region) == 0 {
-		if len(regionFromSession) != 0 && regionFromSession == "snow" {
+		if len(regionFromSession) != 0 && util.IsSBE(regionFromSession) {
 			doc.Region = regionFromSession
 		} else {
 			return nil, fmt.Errorf("could not get valid EC2 region")
@@ -43,7 +44,7 @@ func EC2MetadataInstanceInfo(svc EC2Metadata, regionFromSession string) (*Metada
 	}
 
 	if len(doc.AvailabilityZone) == 0 {
-		if len(regionFromSession) != 0 && regionFromSession == "snow" {
+		if len(regionFromSession) != 0 && util.IsSBE(regionFromSession) {
 			doc.AvailabilityZone = regionFromSession
 		} else {
 			return nil, fmt.Errorf("could not get valid EC2 availability zone")
@@ -63,7 +64,7 @@ func EC2MetadataInstanceInfo(svc EC2Metadata, regionFromSession string) (*Metada
 
 	blockDevMappings := 1
 
-	if doc.Region != "snow" {
+	if !util.IsSBE(doc.Region) {
 		mappings, err := svc.GetMetadata(blockDevicesEndpoint)
 		blockDevMappings = strings.Count(mappings, "\n")
 		if err != nil {

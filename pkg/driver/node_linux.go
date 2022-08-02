@@ -26,6 +26,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/kubernetes-sigs/aws-ebs-csi-driver/pkg/util"
 	"golang.org/x/sys/unix"
 	"k8s.io/klog"
 )
@@ -98,7 +99,7 @@ func (d *nodeService) findDevicePath(devicePath, volumeID, partition string) (st
 		klog.V(5).Infof("[Debug] error searching for nvme path %q: %v", nvmeName, err)
 	}
 
-	if d.metadata.GetRegion() == "snow" {
+	if util.IsSBE(d.metadata.GetRegion()) {
 		klog.V(5).Infof("[Debug] Falling back to snow volume lookup for: %q", devicePath)
 		canonicalDevicePath = "/dev/vd" + strings.TrimPrefix(devicePath, "/dev/xvdb")
 	}
