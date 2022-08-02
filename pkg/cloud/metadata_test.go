@@ -34,12 +34,13 @@ import (
 )
 
 const (
-	nodeName            = "ip-123-45-67-890.us-west-2.compute.internal"
-	stdInstanceID       = "i-abcdefgh123456789"
-	stdInstanceType     = "t2.medium"
-	stdRegion           = "us-west-2"
-	stdAvailabilityZone = "us-west-2b"
-	snowRegion          = "snow"
+	nodeName             = "ip-123-45-67-890.us-west-2.compute.internal"
+	stdInstanceID        = "i-abcdefgh123456789"
+	stdInstanceType      = "t2.medium"
+	stdRegion            = "us-west-2"
+	stdAvailabilityZone  = "us-west-2b"
+	snowRegion           = "snow"
+	snowAvailabilityZone = "snow"
 )
 
 func TestNewMetadataService(t *testing.T) {
@@ -400,7 +401,7 @@ func TestNewMetadataService(t *testing.T) {
 				if m.GetRegion() != stdRegion && m.GetRegion() != snowRegion {
 					t.Errorf("NewMetadataService() failed: got wrong region %v, expected %v", m.GetRegion(), stdRegion)
 				}
-				if m.GetAvailabilityZone() != stdAvailabilityZone && m.GetAvailabilityZone() != snowRegion {
+				if m.GetAvailabilityZone() != stdAvailabilityZone && m.GetAvailabilityZone() != snowAvailabilityZone {
 					t.Errorf("NewMetadataService() failed: got wrong AZ %v, expected %v", m.GetAvailabilityZone(), stdAvailabilityZone)
 				}
 				if m.GetOutpostArn() != tc.expectedOutpostArn {
