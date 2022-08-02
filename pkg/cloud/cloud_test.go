@@ -506,9 +506,6 @@ func TestCreateDisk(t *testing.T) {
 				matcher := eqCreateVolume(tc.expCreateVolumeInput)
 				mockEC2.EXPECT().CreateVolumeWithContext(gomock.Eq(ctx), matcher).Return(vol, tc.expCreateVolumeErr)
 				mockEC2.EXPECT().DescribeVolumesWithContext(gomock.Eq(ctx), gomock.Any()).Return(&ec2.DescribeVolumesOutput{Volumes: []*ec2.Volume{vol}}, tc.expDescVolumeErr).AnyTimes()
-				if tc.diskOptions.AvailabilityZone == "snow" {
-					mockEC2.EXPECT().CreateTagsWithContext(gomock.Eq(ctx), gomock.Any()).Return(&ec2.CreateTagsOutput{}, tc.expCreateTagsErr)
-				}
 				if len(tc.diskOptions.SnapshotID) > 0 {
 					mockEC2.EXPECT().DescribeSnapshotsWithContext(gomock.Eq(ctx), gomock.Any()).Return(&ec2.DescribeSnapshotsOutput{Snapshots: []*ec2.Snapshot{snapshot}}, nil).AnyTimes()
 				}
