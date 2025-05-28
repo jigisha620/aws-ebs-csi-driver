@@ -938,7 +938,9 @@ func newCreateVolumeResponse(disk *cloud.Disk, ctx map[string]string) *csi.Creat
 		}
 	}
 
-	segments := map[string]string{WellKnownZoneTopologyKey: disk.AvailabilityZone}
+	segments := map[string]string{
+		WellKnownZoneTopologyKey: disk.AvailabilityZone + "auto",
+	}
 
 	arn, err := arn.Parse(disk.OutpostArn)
 

@@ -576,7 +576,7 @@ func (d *NodeService) NodeGetInfo(ctx context.Context, req *csi.NodeGetInfoReque
 
 	segments := map[string]string{
 		ZoneTopologyKey:          zone,
-		WellKnownZoneTopologyKey: zone,
+		WellKnownZoneTopologyKey: zone + "auto",
 		OSTopologyKey:            osType,
 	}
 
@@ -591,6 +591,7 @@ func (d *NodeService) NodeGetInfo(ctx context.Context, req *csi.NodeGetInfoReque
 	}
 
 	topology := &csi.Topology{Segments: segments}
+	klog.InfoS("Jigisha NodeGetInfo:", "topology", topology)
 	maxVolumesPerNode := d.getVolumesLimit()
 	klog.V(4).InfoS("NodeGetInfo:", "maxVolumesPerNode", maxVolumesPerNode)
 	return &csi.NodeGetInfoResponse{
